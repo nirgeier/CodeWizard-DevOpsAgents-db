@@ -1,3 +1,5 @@
+# CodeWizard-DevOpsAgents-db
+
 # Database Schema
 
 Supabase/Postgres. **One file is authoritative for this app:**
