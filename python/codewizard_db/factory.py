@@ -35,8 +35,11 @@ def create_backend(config: BackendConfig) -> DbBackend:
     if mode == "postgres":
         from .postgres_store import PostgresBackend
 
-        backend = PostgresBackend(config.postgres_url)
-        ok, reason = backend.probe()
+        try:
+            backend = PostgresBackend(config.postgres_url)
+            ok, reason = backend.probe()
+        except Exception as e:  # noqa: BLE001
+            ok, reason = False, f"postgres unavailable ({e})"
         if ok:
             return backend
         # fall back to local JSON so a missing local Postgres never breaks a scan
@@ -46,8 +49,11 @@ def create_backend(config: BackendConfig) -> DbBackend:
     if mode == "supabase":
         from .supabase_store import SupabaseBackend
 
-        backend = SupabaseBackend(config.supabase_url, config.supabase_key)
-        ok, reason = backend.probe()
+        try:
+            backend = SupabaseBackend(config.supabase_url, config.supabase_key)
+            ok, reason = backend.probe()
+        except Exception as e:  # noqa: BLE001
+            ok, reason = False, f"supabase unavailable ({e})"
         if ok:
             return backend
         from .json_store import JsonBackend
